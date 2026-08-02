@@ -1,0 +1,25 @@
+{
+  "name": "gs334-ios-native",
+  "version": "7.0.1",
+  "private": true,
+  "scripts": {
+    "deploy": "wrangler deploy",
+    "dev": "wrangler dev",
+    "printer-gateway": "node print-gateway.js",
+    "test": "node scripts/self-test.js && node --check print-gateway.js && node --check public/raster-print.js && node --check public/renderer.js && node --check public/cloud-api.js && node --check public/cloud-overrides.js && node --check public/mobile-shell.js && node --check public/app-mode.js && node --check public/push-notifications.js",
+    "ios:sync": "npx cap sync ios",
+    "ios:add": "npx cap add ios",
+    "ios:open": "npx cap open ios",
+    "ios:build:unsigned": "bash scripts/build-unsigned-ipa.sh",
+    "build": "node -e \"console.log('GS334 uses static files in public/: no web compilation required.')\""
+  },
+  "devDependencies": {
+    "wrangler": "^4.18.0",
+    "@capacitor/cli": "^7.4.3"
+  },
+  "dependencies": {
+    "@capacitor/core": "^7.4.3",
+    "@capacitor/ios": "^7.4.3",
+    "gs334-printer": "file:native-plugins/gs334-printer"
+  }
+}

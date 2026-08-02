@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0f5b48">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="GS334">
+  <meta name="application-name" content="GS334 Cloud">
+  <meta name="format-detection" content="telephone=no">
+  <link rel="manifest" href="/manifest.webmanifest">
+  <link rel="icon" href="/icon-192.png" type="image/png">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <title>Giặt Sấy 334 POS</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="mobile-v2.css">
+  <link rel="stylesheet" href="mobile-v3.css?v=5.0.0">
+</head>
+<body>
+  <button id="pwa-install-button" class="pwa-install-button" type="button" hidden>Cài ứng dụng</button>
+  <div id="pwa-install-message" class="pwa-install-message" role="status"></div>
+  <div id="login-screen" class="login-screen">
+    <div class="login-card">
+      <div class="login-logo">334</div>
+      <h1>GIẶT SẤY 334</h1>
+      <p>Đăng nhập để bắt đầu ca làm việc</p>
+      <label>Tài khoản<input id="login-username" autocomplete="username"></label>
+      <label>Mật khẩu<input id="login-password" type="password" autocomplete="current-password"></label>
+      <button id="login-button" class="primary large">Đăng nhập</button>
+      <button id="forgot-password-button" class="login-link" type="button">Quên mật khẩu?</button>
+      <div id="login-error" class="error-text"></div>
+      <div class="login-version">Cloud v5.0.0</div>
+    </div>
+  </div>
+
+  <div id="app-shell" class="app-shell hidden">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-icon">334</div>
+        <div><strong>GIẶT SẤY 334</strong><span>POS chuyên dụng</span></div>
+      </div>
+
+      <nav>
+        <button class="nav-item active" data-page="dashboard"><span class="nav-icon">⌂</span><span>Tổng quan</span></button>
+        <button class="nav-item" data-page="orders"><span class="nav-icon">▤</span><span>Đơn giặt</span></button>
+        <button class="nav-item" data-page="new-order"><span class="nav-icon">＋</span><span>Tạo đơn mới</span></button>
+        <button class="nav-item" data-page="messages"><span class="nav-icon">✉</span><span>Gửi tin nhanh</span></button>
+        <button class="nav-item admin-only" data-page="services"><span class="nav-icon">₫</span><span>Dịch vụ & giá</span></button>
+        <button class="nav-item admin-only" data-page="promotions"><span class="nav-icon">%</span><span>Khuyến mãi</span></button>
+        <button class="nav-item admin-only" data-page="users"><span class="nav-icon">♙</span><span>Nhân viên</span></button>
+        <button class="nav-item admin-only" data-page="connections"><span class="nav-icon">☵</span><span>Tin nhắn & mẫu</span></button>
+        <button class="nav-item admin-only" data-page="settings"><span class="nav-icon">⚙</span><span>Máy in & cài đặt</span></button>
+      </nav>
+
+      <div class="user-panel">
+        <strong id="current-user-name"></strong>
+        <span id="current-user-role"></span>
+        <div class="user-panel-actions"><button id="logout-button" type="button">Đăng xuất</button><button id="reset-app-button" type="button" title="Làm mới phần mềm">↻ Làm mới</button></div>
+      </div>
+    </aside>
+
+    <main class="main-content">
+      <header class="topbar">
+        <div>
+          <h1 id="page-title">Tổng quan</h1>
+          <p id="page-subtitle">Tình hình hoạt động tại tiệm</p>
+        </div>
+        <div class="topbar-actions"><div id="live-clock" class="live-clock" aria-label="Thời gian hiện tại"><span id="live-date">--/--/----</span><strong id="live-time">--:--:--</strong></div><button class="primary" id="quick-new-order">+ Tạo đơn</button><button class="secondary mobile-logout-button" id="mobile-logout-button" type="button">Đăng xuất</button></div>
+      </header>
+
+      <section class="page active" id="page-dashboard">
+        <div class="stats-grid">
+          <div class="stat-card"><span>Đơn hôm nay</span><strong id="stat-today">0</strong></div>
+          <div class="stat-card"><span>Đang xử lý</span><strong id="stat-processing">0</strong></div>
+          <div class="stat-card"><span>Chờ khách lấy</span><strong id="stat-ready">0</strong></div>
+          <div class="stat-card"><span>Đơn quá hẹn</span><strong id="stat-overdue">0</strong></div>
+          <div class="stat-card"><span>Doanh thu hôm nay</span><strong id="stat-revenue">0đ</strong></div>
+          <div class="stat-card"><span>Công nợ</span><strong id="stat-debt">0đ</strong></div>
+        </div>
+        <div class="card revenue-report-card">
+          <div class="section-header"><div><h2>Báo cáo doanh thu</h2><p>Chọn ngày, tháng, năm hoặc khoảng thời gian tùy ý.</p></div></div>
+          <div class="report-toolbar">
+            <label>Kiểu báo cáo<select id="report-type"><option value="day">Theo ngày</option><option value="month">Theo tháng</option><option value="year">Theo năm</option><option value="range">Khoảng tùy chọn</option></select></label>
+            <label id="report-day-wrap">Ngày<input id="report-day" type="date"></label>
+            <label id="report-month-wrap" class="hidden">Tháng<input id="report-month" type="month"></label>
+            <label id="report-year-wrap" class="hidden">Năm<input id="report-year" type="number" min="2020" max="2100"></label>
+            <label id="report-from-wrap" class="hidden">Từ ngày<input id="report-from" type="date"></label>
+            <label id="report-to-wrap" class="hidden">Đến ngày<input id="report-to" type="date"></label>
+            <button class="primary" id="run-revenue-report">Xem báo cáo</button>
+          </div>
+          <div class="report-summary">
+            <div><span>Số đơn</span><strong id="report-orders">0</strong></div><div><span>Doanh thu</span><strong id="report-revenue">0đ</strong></div><div><span>Đã thu</span><strong id="report-paid">0đ</strong></div><div><span>Còn nợ</span><strong id="report-debt">0đ</strong></div>
+          </div><div id="report-period" class="report-period"></div>
+        </div>
+        <div class="dashboard-grid">
+          <div class="card">
+            <div class="section-header"><div><h2>Đơn cần xử lý</h2><p>Ưu tiên đơn quá hẹn và chờ khách lấy</p></div></div>
+            <div id="priority-orders"></div>
+          </div>
+          <div class="card">
+            <h2>Quy trình tại quầy</h2>
+            <div class="workflow">
+              <div><b>1</b><span>Nhận đồ và tạo đơn</span></div>
+              <div><b>2</b><span>In phiếu khách + tem túi</span></div>
+              <div><b>3</b><span>Chuyển trạng thái xử lý</span></div>
+              <div><b>4</b><span>Thu tiền và hoàn thành</span></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="page" id="page-orders">
+        <div class="card">
+          <div class="toolbar">
+            <input id="order-search" placeholder="Tìm mã đơn, tên hoặc số điện thoại...">
+            <select id="status-filter">
+              <option value="">Tất cả trạng thái</option>
+              <option>Đã nhận</option><option>Đang giặt</option><option>Đang sấy</option>
+              <option>Chờ khách lấy</option><option>Hoàn thành</option><option>Đã hủy</option>
+            </select>
+            <select id="date-filter-mode" title="Kiểu lọc thời gian">
+              <option value="">Tất cả thời gian</option>
+              <option value="day" selected>Theo ngày</option>
+              <option value="month">Theo tháng</option>
+              <option value="year">Theo năm</option>
+            </select>
+            <input id="date-filter-value" type="date" title="Chọn ngày cần xem">
+            <button class="secondary admin-only" id="export-excel">Xuất Excel</button>
+            <button class="danger admin-only hidden" id="delete-selected-orders">Xóa đã chọn (<span id="selected-count">0</span>)</button>
+          </div>
+          <div class="table-wrap orders-desktop-table">
+            <table>
+              <thead><tr><th class="admin-only checkbox-col"><input id="select-all-orders" type="checkbox" title="Chọn tất cả"></th><th>Mã đơn</th><th>Khách hàng</th><th>Dịch vụ</th><th>Tổng tiền</th><th>Thanh toán</th><th>Trạng thái</th><th>Chưa lấy</th><th></th></tr></thead>
+              <tbody id="orders-table"></tbody>
+            </table>
+          </div>
+          <div id="orders-mobile-list" class="orders-mobile-list"></div>
+          <div class="empty-state hidden" id="orders-empty">Chưa có đơn phù hợp.</div>
+          <div class="orders-pagination hidden" id="orders-pagination"></div>
+        </div>
+      </section>
+
+      <section class="page" id="page-new-order">
+        <div class="form-layout">
+          <div class="card">
+            <h2>Thông tin khách hàng</h2>
+            <div class="form-grid">
+              <label class="customer-autocomplete-label">Tên khách
+                <input id="customer-name" placeholder="Ví dụ: Chị Lan" autocomplete="off">
+                <div id="customer-suggestions" class="customer-suggestions hidden"></div>
+              </label>
+              <label>Số điện thoại<input id="customer-phone" placeholder="09xx xxx xxx" autocomplete="off"></label>
+              <div id="loyalty-card" class="loyalty-card hidden"></div>
+              <label>Ngày hẹn trả<input id="due-date" type="datetime-local"></label>
+              <label>Thanh toán<select id="payment-status"><option>Chưa thanh toán</option><option>Đã thanh toán</option></select></label>
+            </div>
+            <h2>Dịch vụ</h2>
+            <div id="order-items"></div>
+            <button class="secondary" id="add-item">+ Thêm dịch vụ</button>
+            <label class="full-width">Ghi chú<textarea id="order-note" rows="3" placeholder="Giặt riêng, đồ trắng, dễ phai màu..."></textarea></label>
+          </div>
+          <div class="card order-summary">
+            <h2>Tóm tắt đơn</h2>
+            <div class="summary-row"><span>Tạm tính</span><strong id="subtotal">0đ</strong></div>
+            <div class="summary-row discount-row"><span>Giảm giá</span><div class="discount-control"><input id="discount" class="money-input" inputmode="numeric" value="0"><select id="discount-type" title="Kiểu giảm giá"><option value="amount">₫</option><option value="percent">%</option></select></div></div>
+            <div class="summary-row total"><span>Tổng cộng</span><strong id="grand-total">0đ</strong></div>
+            <label>Khách đưa<input id="paid-amount" class="money-input" inputmode="numeric" value="0"></label>
+            <div class="summary-row"><span>Còn lại</span><strong id="remaining">0đ</strong></div>
+            <button class="primary large" id="save-print-order">Lưu + in phiếu</button>
+            <button class="secondary large" id="save-print-all">Lưu + in phiếu + tem</button>
+            <button class="ghost large" id="save-order">Chỉ lưu đơn</button>
+          </div>
+        </div>
+      </section>
+
+
+      <section class="page" id="page-messages">
+        <div class="quick-message-layout">
+          <div class="card quick-message-card">
+            <div class="section-header"><div><h2>Gửi tin nhanh</h2><p>Chọn khách, chọn mẫu rồi mở Zalo hoặc Facebook để gửi.</p></div></div>
+            <div class="form-grid">
+              <label>Tìm khách hàng<input id="quick-customer-search" placeholder="Nhập tên hoặc số điện thoại..."></label>
+              <label>Khách hàng<select id="quick-customer"></select></label>
+              <label class="full-width">Đơn gần nhất<select id="quick-order"></select></label>
+            </div>
+            <div class="quick-replies minimal-replies" id="quick-template-buttons"></div>
+            <label class="full-width">Nội dung tin nhắn<textarea id="quick-message" rows="7" placeholder="Chọn một mẫu hoặc tự nhập nội dung..."></textarea></label>
+            <div class="button-row quick-send-actions">
+              <button class="primary" id="copy-open-zalo">Sao chép & mở Zalo</button>
+              <button class="facebook-button" id="copy-open-facebook">Sao chép & mở Facebook</button>
+              <button class="secondary" id="copy-message">Chỉ sao chép</button>
+            </div>
+            <div class="notice">Sau khi Zalo/Facebook mở, chọn đúng khách rồi nhấn <b>Ctrl + V</b> và gửi. Phần mềm không đọc hoặc đồng bộ tin nhắn cá nhân.</div>
+          </div>
+          <div class="card quick-customer-summary">
+            <h2>Thông tin khách</h2>
+            <div id="quick-customer-info" class="customer-info-empty">Chưa chọn khách hàng.</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="page" id="page-connections">
+        <div class="connections-grid simple-connections compact-connections">
+          <div class="card connection-card compact-card">
+            <div class="connection-brand zalo">Zalo</div>
+            <h2>Zalo Chat</h2>
+            <p>Mở Zalo để đọc và trả lời tin nhắn bằng tài khoản đang đăng nhập trên máy.</p>
+            <button class="primary large" id="open-zalo">Mở Zalo</button>
+          </div>
+          <div class="card connection-card compact-card">
+            <div class="connection-brand facebook">Facebook</div>
+            <h2>Facebook Fanpage</h2>
+            <p>Mở Meta Business Inbox để quản lý tin nhắn của Fanpage.</p>
+            <button class="facebook-button large" id="open-facebook">Mở Facebook Inbox</button>
+          </div>
+        </div>
+        <div class="card template-settings-card">
+          <div class="section-header"><div><h2>Mẫu tin nhắn</h2><p>Tự tạo, chỉnh sửa và xóa các nút gửi nhanh.</p></div><button class="primary" id="add-message-template">+ Thêm mẫu</button></div>
+          <div id="message-template-list" class="custom-template-list"></div>
+          <div class="template-help">Biến dùng được: <code>{shop}</code>, <code>{customer}</code>, <code>{orderCode}</code>, <code>{dueDate}</code>, <code>{total}</code>, <code>{remaining}</code>.</div>
+          <div class="button-row"><button class="primary" id="save-message-templates">Lưu tất cả mẫu</button></div>
+        </div>
+      </section>
+
+      <section class="page" id="page-services">
+        <div class="card">
+          <div class="section-header"><div><h2>Dịch vụ & bảng giá</h2><p>Chỉ chủ tiệm được thay đổi giá.</p></div><button class="primary" id="add-service">+ Thêm dịch vụ</button></div>
+          <div class="service-head"><span></span><b>Tên dịch vụ</b><b>Đơn vị</b><b>Đơn giá</b><b>Thứ tự</b><span></span></div>
+          <div id="services-list"></div>
+        </div>
+      </section>
+
+      <section class="page" id="page-users">
+        <div class="card">
+          <div class="section-header"><div><h2>Tài khoản nhân viên</h2><p>Tạo tài khoản riêng để kiểm soát thao tác.</p></div><button class="primary" id="add-user">+ Thêm tài khoản</button></div>
+          <div class="recovery-card">
+            <div><b>Mã khôi phục chủ tiệm</b><small>Dùng tại màn hình đăng nhập khi quên mật khẩu. Hãy lưu mã này ở nơi an toàn.</small></div>
+            <code id="recovery-code-display">Đang tạo...</code>
+            <div class="recovery-actions">
+              <button class="secondary" id="copy-recovery-code">Sao chép</button>
+              <button class="secondary" id="custom-recovery-code">Đổi mã</button>
+              <button class="secondary" id="generate-recovery-code">Tạo mã mới</button>
+            </div>
+          </div><div id="users-list"></div>
+        </div>
+      </section>
+
+
+      <section class="page" id="page-promotions">
+        <div class="card promotions-page-card">
+          <div class="section-header">
+            <div><h2>Chương trình khuyến mãi</h2><p>Tạo nhiều mốc ưu đãi theo số lần giặt của từng khách hàng.</p></div>
+            <button class="primary" id="add-promotion">+ Thêm khuyến mãi</button>
+          </div>
+          <div class="promotion-note">Bộ đếm chỉ tính đơn ở trạng thái <b>Hoàn thành</b>. Mỗi đơn chỉ áp dụng tối đa một khuyến mãi để tránh cộng dồn sai tiền.</div>
+          <div id="promotions-list" class="promotions-list"></div>
+        </div>
+      </section>
+
+      <section class="page" id="page-settings">
+        <div class="card settings-card">
+          <h2>Thông tin cửa hàng</h2>
+          <div class="form-grid">
+            <label>Tên cửa hàng<input id="shop-name"></label>
+            <label>Mã cửa hàng<input id="shop-code"></label>
+            <label>Số điện thoại<input id="shop-phone"></label>
+            <label>Địa chỉ<input id="shop-address"></label>
+          </div>
+          <div class="notification-settings-card">
+            <div><h2>Thông báo ứng dụng</h2><p>Chủ tiệm nhận biểu ngữ khi có đơn mới, kể cả khi GS334 đang đóng.</p></div>
+            <button class="primary" id="push-toggle" type="button">Bật thông báo đơn mới</button>
+            <div id="push-status" class="push-status">Đang kiểm tra thiết bị...</div>
+          </div>
+          <h2>Máy in</h2>
+          <div class="printer-mode-box">
+            <label>Kiểu kết nối
+              <select id="printer-mode">
+                <option value="windows">Máy in đã cài trong Windows (USB/LAN)</option>
+                <option value="network">Máy in mạng LAN bằng IP</option>
+              </select>
+            </label>
+          </div>
+
+          <div id="windows-printer-settings">
+            <div class="form-grid">
+              <label>Máy in phiếu<select id="printer-select"></select></label>
+              <label>Máy in tem<select id="label-printer-select"></select></label>
+            </div>
+            <div class="printer-help">
+              Máy in phải được cài driver và xuất hiện trong Windows Settings → Printers & scanners.
+            </div>
+          </div>
+
+          <div id="network-printer-settings" class="hidden">
+            <div class="form-grid">
+              <label>Địa chỉ IP máy in<input id="printer-ip" placeholder="Ví dụ: 192.168.1.200"></label>
+              <label>Port<input id="printer-port" type="number" value="9100"></label>
+            </div>
+            <div class="printer-status" id="printer-status">Chưa kiểm tra kết nối</div>
+          </div>
+
+          <div class="bill-customizer">
+            <div class="section-header bill-customizer-head"><div><h2>Tùy chỉnh bill in</h2><p>Phù hợp máy POS 58 mm, 76 mm, 80 mm hoặc khổ riêng.</p></div><span class="badge green">Xem trước trực tiếp</span></div>
+            <div class="bill-custom-grid">
+              <div class="bill-controls">
+                <div class="form-grid">
+                  <label>Khổ giấy
+                    <select id="paper-width">
+                      <option value="58">58 mm</option><option value="76">76 mm</option><option value="80">80 mm</option><option value="custom">Khổ tùy chỉnh</option>
+                    </select>
+                  </label>
+                  <label id="custom-paper-wrap" class="hidden">Chiều rộng riêng (mm)<input id="custom-paper-width" type="number" min="30" max="120" step="1" value="58"></label>
+                  <label>Chiều cao giấy<select id="paper-height-mode"><option value="auto">Tự động theo nội dung (bill cuộn)</option></select></label>
+                  <label id="fixed-paper-height-wrap" class="hidden">Chiều cao cố định (chỉ dùng cho tem)<input id="fixed-paper-height" type="number" min="25" max="600" step="1" value="150"></label>
+                  <label>Font chữ<select id="receipt-font"><option value="Arial">Arial</option><option value="Tahoma">Tahoma</option><option value="Segoe UI">Segoe UI</option><option value="Courier New">Courier New</option></select></label>
+                  <label>Cỡ chữ nội dung<select id="receipt-font-size"><option value="10">Nhỏ</option><option value="12">Vừa</option><option value="14">Lớn</option><option value="16">Rất lớn</option></select></label>
+                  <label>Cỡ tên cửa hàng<input id="receipt-title-size" type="number" min="14" max="30" value="20"></label>
+                </div>
+                <div class="receipt-editor-section paper-adjust-section"><h3>KÍCH THƯỚC & CĂN CHỈNH</h3>
+                  <div class="form-grid paper-adjust-grid">
+                    <label>Lề trên (mm)<input id="receipt-margin-top" type="number" min="0" max="30" step="0.5" value="3"></label>
+                    <label>Lề phải (mm)<input id="receipt-margin-right" type="number" min="0" max="30" step="0.5" value="4"></label>
+                    <label>Lề dưới (mm)<input id="receipt-margin-bottom" type="number" min="0" max="30" step="0.5" value="3"></label>
+                    <label>Lề trái (mm)<input id="receipt-margin-left" type="number" min="0" max="30" step="0.5" value="4"></label>
+                    <label>Tỷ lệ nội dung (%)<input id="receipt-scale" type="number" min="70" max="130" step="1" value="100"></label>
+                    <label>Giấy thừa cuối phiếu (mm)<input id="receipt-feed-bottom" type="number" min="0" max="50" step="1" value="0"></label>
+                    <label>Số liên mỗi lần in
+                      <select id="receipt-copies"><option value="1">1 liên</option><option value="2">2 liên</option><option value="3">3 liên</option></select>
+                    </label>
+                    <label>Số dòng đẩy trước khi cắt<input id="receipt-feed-before-cut" type="number" min="0" max="10" step="1" value="3"></label>
+                    <label>Kiểu cắt<select id="receipt-cut-mode"><option value="full">Cắt toàn phần</option><option value="partial">Cắt một phần</option></select></label>
+                  </div>
+                  <div class="receipt-options print-copy-options">
+                    <label class="checkbox"><input id="receipt-cut-between-copies" type="checkbox"> Tự cắt giữa các liên</label>
+                    <label class="checkbox"><input id="receipt-final-cut" type="checkbox"> Cắt sau liên cuối</label>
+                    <label class="checkbox"><input id="receipt-show-copy-label" type="checkbox"> In tên từng liên</label>
+                  </div>
+                  <div class="form-grid copy-label-grid">
+                    <label>Tên liên 1<input id="receipt-copy-1-label" value="PHIẾU KHÁCH"></label>
+                    <label>Tên liên 2<input id="receipt-copy-2-label" value="PHIẾU TIỆM"></label>
+                    <label>Tên liên 3<input id="receipt-copy-3-label" value="PHIẾU LƯU"></label>
+                  </div>
+                  <div class="setting-hint">Nên để chiều cao <b>Tự động</b> cho bill dài. Chỉ dùng chiều cao cố định khi in tem hoặc cuộn giấy đã cắt sẵn.</div>
+                </div>
+                <div class="format-toolbar" aria-label="Định dạng tên cửa hàng">
+                  <span>Kiểu tên cửa hàng:</span>
+                  <label class="format-option"><input id="receipt-title-bold" type="checkbox"><b>B</b></label>
+                  <label class="format-option"><input id="receipt-title-italic" type="checkbox"><i>I</i></label>
+                  <label class="format-option"><input id="receipt-compact" type="checkbox"> Chế độ gọn</label>
+                </div>
+                <div class="receipt-editor-section"><h3>TOP — Đầu phiếu</h3>
+                  <div class="form-grid"><label>Dòng phụ dưới tên cửa hàng<input id="receipt-header-text" placeholder="Để trống nếu không cần"></label></div>
+                  <div class="receipt-options">
+                    <label class="checkbox"><input id="receipt-show-shop-name" type="checkbox"> Hiện tên cửa hàng</label>
+                    <label class="checkbox"><input id="receipt-show-address" type="checkbox"> Hiện địa chỉ</label>
+                    <label class="checkbox"><input id="receipt-show-phone" type="checkbox"> Hiện số điện thoại</label>
+                    <label class="checkbox"><input id="receipt-show-header-text" type="checkbox"> Hiện dòng phụ</label>
+                  </div>
+                </div>
+                <div class="receipt-editor-section"><h3>MID — Thông tin đơn</h3>
+                  <div class="receipt-options">
+                    <label class="checkbox"><input id="receipt-show-order-date" type="checkbox"> Hiện ngày nhận</label>
+                    <label class="checkbox"><input id="receipt-show-customer" type="checkbox"> Hiện tên khách</label>
+                    <label class="checkbox"><input id="receipt-show-customer-phone" type="checkbox"> Hiện SĐT khách</label>
+                    <label class="checkbox"><input id="receipt-show-due-date" type="checkbox"> Hiện ngày/giờ hẹn trả</label>
+                    <label class="checkbox"><input id="receipt-show-paid" type="checkbox"> Hiện khách đưa / còn lại</label>
+                    <label class="checkbox"><input id="receipt-show-note" type="checkbox"> Hiện ghi chú đơn</label>
+                  </div>
+                </div>
+                <div class="receipt-editor-section"><h3>BELOW — Cuối phiếu</h3>
+                  <div class="form-grid">
+                    <label>Lời cảm ơn<input id="receipt-footer" placeholder="Ví dụ: Cảm ơn quý khách!"></label>
+                    <label>Dòng nhắc cuối phiếu<input id="receipt-bottom-note" placeholder="Ví dụ: Vui lòng giữ phiếu để nhận đồ."></label>
+                  </div>
+                  <div class="receipt-options">
+                    <label class="checkbox"><input id="receipt-show-footer" type="checkbox"> Hiện lời cảm ơn</label>
+                    <label class="checkbox"><input id="receipt-show-bottom-note" type="checkbox"> Hiện dòng nhắc cuối</label>
+                  </div>
+                </div>
+              </div>
+              <div class="bill-preview-wrap"><div class="bill-preview-label">BẢN XEM TRƯỚC</div><div id="bill-preview" class="bill-preview"></div></div>
+            </div>
+          </div>
+
+          <label class="checkbox"><input id="auto-print" type="checkbox"> In trực tiếp, không mở hộp thoại</label>
+          <div class="button-row">
+            <button class="primary" id="save-settings">Lưu cài đặt</button>
+            <button class="secondary" id="test-connection">Kiểm tra kết nối</button>
+            <button class="secondary" id="test-print">In thử phiếu</button>
+            <button class="secondary" id="test-label">In thử tem</button>
+          </div>
+          <div class="data-management">
+            <div class="section-header"><div><h2>Quản lý dữ liệu</h2><p>Sao lưu để đổi máy hoặc bảo vệ dữ liệu khi máy tính gặp sự cố.</p></div><span class="badge green">v3.7</span></div>
+            <div class="backup-actions">
+              <button class="primary" id="backup-quick">💾 Sao lưu nhanh</button>
+              <button class="secondary" id="backup-export">📂 Sao lưu vào...</button>
+              <button class="danger" id="backup-import">📥 Khôi phục dữ liệu</button>
+              <button class="secondary" id="backup-open-folder">📁 Mở thư mục Backup</button>
+            </div>
+            <div class="backup-status" id="backup-status">Đang kiểm tra thư mục sao lưu...</div>
+            <div class="notice">Sao lưu nhanh sẽ tự tạo thư mục <b>backup</b> cạnh phần mềm. Nếu thư mục cài đặt bị Windows khóa quyền ghi, bản sao lưu sẽ được lưu an toàn trong Documents. Trước mỗi lần khôi phục, phần mềm tự tạo thêm một bản cứu hộ của dữ liệu hiện tại.</div>
+          </div>
+        </div>
+      
+</section>
+
+
+    </main>
+  </div>
+
+  <div class="modal hidden" id="order-modal"><div class="modal-panel"><button class="modal-close" id="close-modal">×</button><div id="order-modal-content"></div></div></div>
+  <div class="modal hidden" id="account-modal"><div class="modal-panel account-modal-panel"><button class="modal-close" id="close-account-modal">×</button><div id="account-modal-content"></div></div></div>
+  <div class="toast hidden" id="toast"></div>
+  <script src="install-app.js"></script>
+  <script src="cloud-api.js"></script>
+  <script src="raster-print.js"></script>
+<script src="renderer.js"></script>
+  <script src="cloud-overrides.js"></script>
+  <script src="app-mode.js"></script>
+  <script src="push-notifications.js"></script>
+  <script src="press-feedback.js"></script>
+  <script>
+    // V3.7.2: đồng hồ chạy độc lập, không bị ảnh hưởng nếu renderer có lỗi ở tính năng khác.
+    (function () {
+      function renderHeaderClock() {
+        var now = new Date();
+        var dateEl = document.getElementById("live-date");
+        var timeEl = document.getElementById("live-time");
+        if (dateEl) dateEl.textContent = now.toLocaleDateString("vi-VN", { day: "2-digit", month: "2-digit", year: "numeric" });
+        if (timeEl) timeEl.textContent = now.toLocaleTimeString("vi-VN", { hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false });
+      }
+      renderHeaderClock();
+      window.setInterval(renderHeaderClock, 1000);
+    })();
+  </script>
+  <script src="mobile-shell.js"></script>
+</body>
+</html>

@@ -1,0 +1,85 @@
+{
+  "name": "Giặt Sấy 334 POS",
+  "short_name": "GS334",
+  "description": "Quản lý tiệm Giặt Sấy 334",
+  "id": "/",
+  "start_url": "/?source=pwa",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#f3f7f5",
+  "theme_color": "#0f5b48",
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "display_override": [
+    "window-controls-overlay",
+    "standalone",
+    "minimal-ui"
+  ],
+  "lang": "vi",
+  "dir": "ltr",
+  "categories": [
+    "business",
+    "productivity"
+  ],
+  "prefer_related_applications": false,
+  "shortcuts": [
+    {
+      "name": "Tạo đơn mới",
+      "short_name": "Tạo đơn",
+      "description": "Mở nhanh màn hình tạo đơn",
+      "url": "/?source=pwa&open=new-order",
+      "icons": [
+        {
+          "src": "/icon-192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    },
+    {
+      "name": "Đơn giặt",
+      "short_name": "Đơn giặt",
+      "description": "Mở danh sách đơn giặt",
+      "url": "/?source=pwa&open=orders",
+      "icons": [
+        {
+          "src": "/icon-192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    },
+    {
+      "name": "Tổng quan",
+      "short_name": "Tổng quan",
+      "description": "Mở trang tổng quan",
+      "url": "/?source=pwa&open=dashboard",
+      "icons": [
+        {
+          "src": "/icon-192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    }
+  ]
+}

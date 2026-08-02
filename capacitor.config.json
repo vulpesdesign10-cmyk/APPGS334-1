@@ -1,0 +1,17 @@
+{
+  "appId": "vn.gs334.cloud",
+  "appName": "GS334",
+  "webDir": "public",
+  "server": {
+    "url": "https://appgs334.giatsay334-7d8.workers.dev",
+    "cleartext": false,
+    "allowNavigation": [
+      "appgs334.giatsay334-7d8.workers.dev"
+    ]
+  },
+  "ios": {
+    "contentInset": "automatic",
+    "preferredContentMode": "mobile",
+    "allowsLinkPreview": false
+  }
+}

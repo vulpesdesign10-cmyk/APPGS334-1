@@ -1,0 +1,16 @@
+GS334 Cloud v6.2.9 - ICONS + SPACED RECEIPT
+
+Automated checks:
+- Raster + Push self-test: PASS
+- JavaScript syntax checks: PASS
+- Print Gateway syntax: PASS
+- Raster stripe format retained: 128 rows
+- Remote push endpoints retained
+- Receipt copies and auto-cut logic retained
+
+Receipt changes:
+- Added monochrome vector icons rendered directly into raster output
+- Added icons for address, phone, order, date, customer, service, total, payment, note and footer
+- Increased vertical spacing between rows and sections
+- Preview and printed receipt continue to use the same raster renderer
+- No external icon font or network dependency

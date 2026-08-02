@@ -1,0 +1,22 @@
+{
+  "name": "gs334-printer",
+  "version": "1.0.0",
+  "description": "Native TCP ESC/POS raster printing for GS334",
+  "main": "dist/plugin.cjs.js",
+  "module": "dist/esm/index.js",
+  "types": "dist/esm/index.d.ts",
+  "files": [
+    "dist/",
+    "ios/",
+    "Package.swift",
+    "GS334Printer.podspec"
+  ],
+  "capacitor": {
+    "ios": {
+      "src": "ios"
+    }
+  },
+  "peerDependencies": {
+    "@capacitor/core": ">=7.0.0"
+  }
+}

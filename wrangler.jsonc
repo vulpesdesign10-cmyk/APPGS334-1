@@ -1,0 +1,7 @@
+{
+  "name": "appgs334",
+  "main": "worker.js",
+  "compatibility_date": "2026-07-31",
+  "assets": {"directory":"./public","binding":"ASSETS","not_found_handling":"single-page-application"},
+  "d1_databases": [{"binding":"DB","database_name":"gs334-db","database_id":"272c27a4-7c11-409f-a73b-9fc0daca6ddc"}]
+}

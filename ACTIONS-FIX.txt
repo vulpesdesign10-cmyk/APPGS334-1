@@ -1,0 +1,12 @@
+GS334 iOS v7.0.1 – GitHub Actions Fix
+
+Đã sửa:
+- Thêm script `build` dạng kiểm tra no-op vì ứng dụng dùng trực tiếp thư mục public/.
+- Workflow chỉ còn một file: .github/workflows/main.yml.
+- Workflow tự tạo ios/App bằng `npx cap add ios` nếu repository chưa có thư mục ios.
+- Bỏ @capacitor/assets vì không cần thiết cho việc tạo IPA và có thể làm npm install lỗi.
+- Build file IPA unsigned để ký bằng Sideloadly/SideStore.
+
+Sau khi upload toàn bộ source lên GitHub:
+Actions -> Build GS334 iOS IPA -> Run workflow.
+Artifact: GS334-iOS-unsigned.zip, bên trong có GS334-iOS-unsigned.ipa.

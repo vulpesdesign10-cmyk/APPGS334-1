@@ -1,0 +1,21 @@
+GS334 iOS Native v7.0.0
+========================
+
+Đã thêm:
+- Capacitor iOS native shell tải GS334 Cloud cố định.
+- Plugin Swift Network.framework in Raster ESC/POS trực tiếp qua TCP LAN.
+- Hỗ trợ 1/2/3 liên và lệnh cắt giữa các liên.
+- Quyền Local Network cho iOS.
+- GitHub Actions tạo IPA unsigned để ký bằng Sideloadly/SideStore.
+- Giữ nguyên Cloudflare Worker + D1 và PWA/Web hiện tại.
+
+Đã kiểm tra trong môi trường hiện tại:
+- public/cloud-api.js: syntax PASS
+- scripts/prepare-ios.mjs: syntax PASS
+- GS334 self-test: PASS
+- Cấu trúc plugin Swift/Package.swift/Podspec: present
+- GitHub workflow và build script: present
+
+Chưa thể kiểm chứng tại đây:
+- Biên dịch Xcode thật (môi trường hiện tại không phải macOS/Xcode).
+- In trực tiếp trên iPhone thật. Cần build IPA trên GitHub Actions, cài qua Sideloadly và test cùng Wi-Fi máy in.
